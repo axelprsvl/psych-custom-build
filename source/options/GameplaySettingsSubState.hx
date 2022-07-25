@@ -34,6 +34,34 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		title = 'Gameplay Settings';
 		rpcTitle = 'Gameplay Settings Menu'; //for Discord Rich Presence
 
+		var option:Option = new Option('Play as opponent',
+			'if checked, you play as the opponent',
+			'playOpp',
+			'bool',
+			false);
+		addOption(option);
+
+		var option:Option = new Option('Winning Icon',
+			'if checked, enable winning icons',
+			'winningicon',
+			'bool',
+			false);
+		addOption(option);
+
+		var option:Option = new Option('Icon Bop',
+			'Make icon bopping',
+			'iconbop',
+			'bool',
+			false);
+		addOption(option);
+
+		var option:Option = new Option('Old icon',
+			'Re-enable old icon by pressing nine',
+			'enableoldicon',
+			'bool',
+			false);
+		addOption(option);
+
 		var option:Option = new Option('Controller Mode',
 			'Check this if you want to play with\na controller instead of using your Keyboard.',
 			'controllerMode',

@@ -34,6 +34,19 @@ class VisualsUISubState extends BaseOptionsMenu
 		title = 'Visuals and UI';
 		rpcTitle = 'Visuals & UI Settings Menu'; //for Discord Rich Presence
 
+		var option:Option = new Option('Colored Time Bar',
+			"If checked, a rgb code is in the json file and you can change it in chart editor",
+			'coloredtimebar',
+			'bool',
+			false);
+		addOption(option);
+
+		var option:Option = new Option('Note transparency',
+		'100% fully opaque and 0% not even affiched',
+			'noteTransparency',
+			'percent',
+			1);
+
 		var option:Option = new Option('Note Splashes',
 			"If unchecked, hitting \"Sick!\" notes won't show particles.",
 			'noteSplashes',

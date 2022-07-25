@@ -805,6 +805,7 @@
 		"needsVoices": true,
 		"validScore": true,
 		"bpm": 100,
-		"speed": 1
+		"speed": 1,
+		"rgb": [175,102,206]
 	}
 }

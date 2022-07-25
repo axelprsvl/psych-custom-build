@@ -199,6 +199,9 @@ class ChartingState extends MusicBeatState
 	var text:String = "";
 	public static var vortex:Bool = false;
 	public var mouseQuant:Bool = false;
+	var healthColorStepperR:FlxUINumericStepper;
+	var healthColorStepperG:FlxUINumericStepper;
+	var healthColorStepperB:FlxUINumericStepper;
 	override function create()
 	{
 		if (PlayState.SONG != null)
@@ -219,6 +222,7 @@ class ChartingState extends MusicBeatState
 				player2: 'dad',
 				gfVersion: 'gf',
 				speed: 1,
+				rgb: [],
 				stage: 'stage',
 				validScore: false
 			};
@@ -599,6 +603,40 @@ class ChartingState extends MusicBeatState
 			updateGrid();
 		});
 
+		var temp:Int;
+		if(_song.rgb == null){ //donc len = 0, fixe le crash
+			temp = 0;
+			_song.rgb = [255, 255, 255];
+		}
+		temp = _song.rgb.length;
+		while(temp != 3){
+			_song.rgb.push(255);
+			temp++;
+		}
+
+		for (i in 0..._song.rgb.length){
+			if(_song.rgb[i] < 0){
+				_song.rgb[i] = 0;
+			}
+			if(_song.rgb[i] > 255){
+				_song.rgb[i] = 255;
+			}
+		}
+
+		healthColorStepperR = new FlxUINumericStepper(stageDropDown.x, gfVersionDropDown.y, 1, _song.rgb[0], 0, 255, 0);
+		//healthColorStepperG = new FlxUINumericStepper(healthColorStepperR.x, healthColorStepperR.y + 40, 1, _song.rgb[1], 0, 255, 0);
+		healthColorStepperG = new FlxUINumericStepper(healthColorStepperR.x + 75, healthColorStepperR.y, 1, _song.rgb[1], 0, 255, 0);
+		healthColorStepperB = new FlxUINumericStepper(healthColorStepperR.x, healthColorStepperG.y + 40, 1, _song.rgb[2], 0, 255, 0);
+		healthColorStepperR.value = _song.rgb[0];
+		healthColorStepperR.name = 'r';
+		healthColorStepperG.value = _song.rgb[1];
+		healthColorStepperG.name = 'g';
+		healthColorStepperB.value = _song.rgb[2];
+		healthColorStepperB.name = 'b';
+		blockPressWhileTypingOnStepper.push(healthColorStepperR);
+		blockPressWhileTypingOnStepper.push(healthColorStepperG);
+		blockPressWhileTypingOnStepper.push(healthColorStepperB);
+
 		var tab_group_song = new FlxUI(null, UI_box);
 		tab_group_song.name = "Song";
 		tab_group_song.add(UI_songTitle);
@@ -624,6 +662,12 @@ class ChartingState extends MusicBeatState
 		tab_group_song.add(new FlxText(gfVersionDropDown.x, gfVersionDropDown.y - 15, 0, 'Girlfriend:'));
 		tab_group_song.add(new FlxText(player1DropDown.x, player1DropDown.y - 15, 0, 'Boyfriend:'));
 		tab_group_song.add(new FlxText(stageDropDown.x, stageDropDown.y - 15, 0, 'Stage:'));
+		tab_group_song.add(new FlxText(healthColorStepperR.x, healthColorStepperR.y - 15, 0, 'R:'));
+		tab_group_song.add(healthColorStepperR);
+		tab_group_song.add(new FlxText(healthColorStepperG.x, healthColorStepperG.y - 15, 0, 'G:'));
+		tab_group_song.add(healthColorStepperG);
+		tab_group_song.add(new FlxText(healthColorStepperB.x, healthColorStepperB.y - 15, 0, 'B:'));
+		tab_group_song.add(healthColorStepperB);
 		tab_group_song.add(new FlxText(noteSkinInputText.x, noteSkinInputText.y - 15, 0, 'Note Texture:'));
 		tab_group_song.add(new FlxText(noteSplashesInputText.x, noteSplashesInputText.y - 15, 0, 'Note Splashes Texture:'));
 		tab_group_song.add(player2DropDown);
@@ -1425,6 +1469,18 @@ class ChartingState extends MusicBeatState
 			else if (wname == 'song_speed')
 			{
 				_song.speed = nums.value;
+			}
+			else if (wname == 'r')
+			{
+				_song.rgb[0] = Std.int(nums.value);
+			}
+			else if (wname == 'g')
+			{
+				_song.rgb[1] = Std.int(nums.value);
+			}
+			else if (wname == 'b')
+			{
+				_song.rgb[2] = Std.int(nums.value);
 			}
 			else if (wname == 'song_bpm')
 			{

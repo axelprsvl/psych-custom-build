@@ -86,6 +86,12 @@ class ClientPrefs {
 		'debug_2'		=> [EIGHT, NONE]
 	];
 	public static var defaultKeys:Map<String, Array<FlxKey>> = null;
+	public static var enableoldicon:Bool = false;
+	public static var iconbop:Bool = false;
+	public static var coloredtimebar:Bool = false;
+	public static var winningicon:Bool = false;
+	public static var playOpp:Bool = false;
+	public static var noteTransparency:Float = 1;
 
 	public static function loadDefaultKeys() {
 		defaultKeys = keyBinds.copy();
@@ -128,6 +134,13 @@ class ClientPrefs {
 		FlxG.save.data.hitsoundVolume = hitsoundVolume;
 		FlxG.save.data.pauseMusic = pauseMusic;
 		FlxG.save.data.checkForUpdates = checkForUpdates;
+		
+		FlxG.save.data.enableoldicon = enableoldicon;
+		FlxG.save.data.iconbop = iconbop;
+		FlxG.save.data.coloredtimebar = coloredtimebar;
+		FlxG.save.data.winningicon = winningicon;
+		FlxG.save.data.playOpp = playOpp;
+		FlxG.save.data.noteTransparency = noteTransparency;
 	
 		FlxG.save.flush();
 
@@ -139,6 +152,24 @@ class ClientPrefs {
 	}
 
 	public static function loadPrefs() {
+		if(FlxG.save.data.noteTransparency != null) {
+			noteTransparency = FlxG.save.data.noteTransparency;
+		}
+		if(FlxG.save.data.playOpp != null){
+			playOpp = FlxG.save.data.playOpp;
+		}
+		if(FlxG.save.data.coloredtimebar != null){
+			coloredtimebar = FlxG.save.data.coloredtimebar;
+		}
+		if(FlxG.save.data.iconbop != null){
+			iconbop = FlxG.save.data.iconbop;
+		}
+		if(FlxG.save.data.winningicon != null){
+			winningicon = FlxG.save.data.winningicon;
+		}
+		if(FlxG.save.data.enableoldicon != null){
+			enableoldicon = FlxG.save.data.enableoldicon;
+		}
 		if(FlxG.save.data.downScroll != null) {
 			downScroll = FlxG.save.data.downScroll;
 		}
