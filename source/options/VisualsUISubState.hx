@@ -46,6 +46,7 @@ class VisualsUISubState extends BaseOptionsMenu
 			'noteTransparency',
 			'percent',
 			1);
+			addOption(option);
 
 		var option:Option = new Option('Note Splashes',
 			"If unchecked, hitting \"Sick!\" notes won't show particles.",

@@ -331,7 +331,6 @@ class PlayState extends MusicBeatState
 	var JukeBoxText:FlxText;
 	var JukeBoxTimer:FlxTimer;
 	var timerfinished:Bool = false;
-	var ogoppnotes:Array<Float> = [];
 
 	override public function create()
 	{
@@ -2242,74 +2241,44 @@ class PlayState extends MusicBeatState
 			if (skipCountdown || startOnTime > 0)
 				skipArrowStartTween = true;
 
-			if (ClientPrefs.playOpp)
+			if (ClientPrefs.playOpp  && !ClientPrefs.middleScroll)
 			{
 				STRUM_X += 640;
 			}
 
 			generateStaticArrows(0);
 			generateStaticArrows(1);
-			var tempxplay = [];
-			var tempxopp = [];
 
 			for (i in 0...playerStrums.length)
 			{
-				tempxplay.push(playerStrums.members[i].x);
 				setOnLuas('defaultPlayerStrumX' + i, playerStrums.members[i].x);
 				setOnLuas('defaultPlayerStrumY' + i, playerStrums.members[i].y);
 			}
 			for (i in 0...opponentStrums.length)
 			{
-				tempxopp.push(opponentStrums.members[i].x);
 				setOnLuas('defaultOpponentStrumX' + i, opponentStrums.members[i].x);
 				setOnLuas('defaultOpponentStrumY' + i, opponentStrums.members[i].y);
 				// if(ClientPrefs.middleScroll) opponentStrums.members[i].visible = false;
 			}
-			trace(playerStrums.members[0].x);
-			//playerStrums.members.x.reverse();
 
-			/*if (ClientPrefs.playOpp && !ClientPrefs.middleScroll)
-				{
-					for (i in 0...playerStrums.length)
-					{
-						// opponentStrums.members[i].alpha = 1;
-						// playerStrums.members[i].alpha = 1;
-						// opponentStrums.members[i].x = playerStrums.members[i].x;
-						// playerStrums.members[i].x = tempx[i];
-						
-
-						FlxTween.tween(opponentStrums.members[i], {x: playerStrums.members[i].x}, 0.01);
-						FlxTween.tween(playerStrums.members[i], {x: ogoppnotes[i]}, 0.01);
-					}
-			}*/
-
-			if (ClientPrefs.playOpp)
+			if (!ClientPrefs.lowQuality && opponentStrums.length == playerStrums.length /*&& !ClientPrefs.middleScroll*/ && ClientPrefs.playOpp)
 			{
-				/*var opplength:Int = opponentStrums.length - 1;
-				var k:Int = opplength;
-				var done:Int = 0;
-				do{
-					opponentStrums.members[k].x = tempxopp[done];
-					done++;
-					k -= 1;
-				}while(opplength+1 != done);
-
-				
-			var playlength:Int = playerStrums.length - 1;
-			var j:Int = playlength;
-			var playdone:Int = 0;
-			do{
-				playerStrums.members[j].x = tempxplay[playdone];
-				playdone++;
-				j -= 1;
-			}while(playlength+1 != playdone);*/
-
-				STRUM_X -= 640;
+				var tempxplay = [];
+				var tempoppx = [];
+				for (i in 0...opponentStrums.length)
+				{
+					tempoppx.push(opponentStrums.members[i].x);
+					tempxplay.push(playerStrums.members[i].x);
+					opponentStrums.members[i].x = tempxplay[i];
+					playerStrums.members[i].x = tempoppx[i];
+					FlxTween.tween(playerStrums.members[i], {x: tempxplay[i]}, (Conductor.crochet / 1000) * 4);
+					FlxTween.tween(opponentStrums.members[i], {x: tempoppx[i]}, (Conductor.crochet / 1000) * 4);
+				}
 			}
 
-			for (i in 0...opponentStrums.length)
+			if (ClientPrefs.playOpp  && !ClientPrefs.middleScroll)
 			{
-				ogoppnotes.push(opponentStrums.members[i].x);
+				STRUM_X -= 640;
 			}
 
 			startedCountdown = true;
@@ -3166,26 +3135,6 @@ class PlayState extends MusicBeatState
 		}
 		callOnLuas('onUpdate', [elapsed]);
 
-		/*for(i in 0...playerStrums.length){
-			trace('Player Strum ' + Std.string(i) + ' : '+ Std.string(playerStrums.members[i].x));
-		}
-
-		for(i in 0...opponentStrums.length){
-			trace('Opp Strum ' + Std.string(i) + ' : '+ Std.string(opponentStrums.members[i].x));
-	}*/
-		/*if (ClientPrefs.playOpp && !ClientPrefs.middleScroll && opponentStrums.members[0].x != STRUM_X)
-		{
-			for (i in 0...playerStrums.length)
-			{
-				// opponentStrums.members[i].alpha = 1;
-				// playerStrums.members[i].alpha = 1;
-				// opponentStrums.members[i].x = playerStrums.members[i].x;
-				// playerStrums.members[i].x = tempx[i];
-				FlxTween.tween(opponentStrums.members[i], {x: playerStrums.members[i].x}, 1);
-				FlxTween.tween(playerStrums.members[i], {x: ogoppnotes[i]}, 1);
-			}
-	}*/
-
 		switch (curStage)
 		{
 			case 'tank':
@@ -3615,20 +3564,20 @@ class PlayState extends MusicBeatState
 			}
 
 			if (!inCutscene && ClientPrefs.playOpp)
+			{
+				if (!cpuControlled)
 				{
-					if (!cpuControlled)
-					{
-						keyShit();
-					}
-					else if (dad.animation.curAnim != null
-						&& dad.holdTimer > Conductor.stepCrochet * 0.0011 * dad.singDuration
-						&& dad.animation.curAnim.name.startsWith('sing')
-						&& !dad.animation.curAnim.name.endsWith('miss'))
-					{
-						dad.dance();
-						// boyfriend.animation.curAnim.finish();
-					}
+					keyShit();
 				}
+				else if (dad.animation.curAnim != null
+					&& dad.holdTimer > Conductor.stepCrochet * 0.0011 * dad.singDuration
+					&& dad.animation.curAnim.name.startsWith('sing')
+					&& !dad.animation.curAnim.name.endsWith('miss'))
+				{
+					dad.dance();
+					// boyfriend.animation.curAnim.finish();
+				}
+			}
 
 			var fakeCrochet:Float = (60 / SONG.bpm) * 1000;
 			notes.forEachAlive(function(daNote:Note)
@@ -3889,8 +3838,8 @@ class PlayState extends MusicBeatState
 				{
 					timer.active = true;
 				}
-				openSubState(new GameOverSubstate(dad.getScreenPosition().x - dad.positionArray[0],
-					dad.getScreenPosition().y - dad.positionArray[1], camFollowPos.x, camFollowPos.y));
+				openSubState(new GameOverSubstate(dad.getScreenPosition().x - dad.positionArray[0], dad.getScreenPosition().y - dad.positionArray[1],
+					camFollowPos.x, camFollowPos.y));
 
 				// MusicBeatState.switchState(new GameOverState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
 
@@ -5236,7 +5185,7 @@ class PlayState extends MusicBeatState
 
 	function opponentNoteHit(note:Note):Void
 	{
-		if (Paths.formatToSongPath(SONG.song) != 'tutorial')
+		if (Paths.formatToSongPath(SONG.song) != 'tutorial' && !ClientPrefs.playOpp)
 			camZooming = true;
 
 		if (note.noteType == 'Hey!' && dad.animOffsets.exists('hey'))
@@ -5307,6 +5256,8 @@ class PlayState extends MusicBeatState
 
 	function goodNoteHit(note:Note):Void
 	{
+		if (Paths.formatToSongPath(SONG.song) != 'tutorial' && ClientPrefs.playOpp)
+			camZooming = true;
 		if (!note.wasGoodHit)
 		{
 			if (cpuControlled && (note.ignoreNote || note.hitCausesMiss))
@@ -6098,9 +6049,9 @@ class PlayState extends MusicBeatState
 							unlock = true;
 						}
 						if (dad.holdTimer >= 10 && !usedPractice && ClientPrefs.playOpp)
-							{
-								unlock = true;
-							}
+						{
+							unlock = true;
+						}
 					case 'hype':
 						if (!boyfriendIdled && !usedPractice)
 						{
