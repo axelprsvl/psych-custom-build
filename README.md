@@ -4,7 +4,7 @@ This is just a new build cuz why not? what does it adds?
 * Note tranparency
 * Colored time bar for each songs and each difficulty (you can modify it in chart editor)
 * Winning icon (if a winning icon is not found, it take a normal icon) AND MOST IMPORTANTLY
-* You can play as the opponent (expect some bugs with mods)\n
+* You can play as the opponent (expect some bugs with mods)
 Don't hesitate to tell if something is wrong or if you want something to be added.
 
 # Friday Night Funkin' - Psych Engine
