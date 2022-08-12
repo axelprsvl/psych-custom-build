@@ -31,8 +31,17 @@ class HealthIcon extends FlxSprite
 	}
 
 	public function swapOldIcon() {
-		if(isOldIcon = !isOldIcon) changeIcon('bf-old');
-		else changeIcon(PlayState.iconname);
+		if(isOldIcon = !isOldIcon){
+			changeIcon('bf-old');
+		}
+		else{
+			if(ClientPrefs.playOpp){
+				changeIcon(PlayState.nameicondad[PlayState.numchardad]);
+			}
+			else{
+				changeIcon(PlayState.nameiconbf[PlayState.numcharbf]);
+			}
+		}
 	}
 
 	private var iconOffsets:Array<Float> = [0, 0];

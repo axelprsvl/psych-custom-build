@@ -252,64 +252,138 @@ class Character extends FlxSprite
 				loadMappedAnims();
 				playAnim("shoot1");
 		}
+		if(ClientPrefs.playOpp && !curCharacter.startsWith('gf')){
+			isPlayer = !isPlayer;
+			this.isPlayer;
+		}
 	}
 
 	override function update(elapsed:Float)
 	{
-		if(!debugMode && animation.curAnim != null)
-		{
-			if(heyTimer > 0)
-			{
-				heyTimer -= elapsed;
-				if(heyTimer <= 0)
+		if(ClientPrefs.playOpp && !isPlayer){
+			if (!debugMode && animation.curAnim != null)
 				{
-					if(specialAnim && animation.curAnim.name == 'hey' || animation.curAnim.name == 'cheer')
+					if (animation.curAnim.name.startsWith('sing'))
+					{
+						holdTimer += elapsed;
+					}
+					else
+						holdTimer = 0;
+				}
+		}
+		else if(ClientPrefs.playOpp && isPlayer){
+			if(!debugMode && animation.curAnim != null)
+				{
+					if(heyTimer > 0)
+					{
+						heyTimer -= elapsed;
+						if(heyTimer <= 0)
+						{
+							if(specialAnim && animation.curAnim.name == 'hey' || animation.curAnim.name == 'cheer')
+							{
+								specialAnim = false;
+								dance();
+							}
+							heyTimer = 0;
+						}
+					} else if(specialAnim && animation.curAnim.finished)
 					{
 						specialAnim = false;
 						dance();
 					}
-					heyTimer = 0;
-				}
-			} else if(specialAnim && animation.curAnim.finished)
-			{
-				specialAnim = false;
-				dance();
-			}
-			
-			switch(curCharacter)
-			{
-				case 'pico-speaker':
-					if(animationNotes.length > 0 && Conductor.songPosition > animationNotes[0][0])
+					
+					switch(curCharacter)
 					{
-						var noteData:Int = 1;
-						if(animationNotes[0][1] > 2) noteData = 3;
-
-						noteData += FlxG.random.int(0, 1);
-						playAnim('shoot' + noteData, true);
-						animationNotes.shift();
+						case 'pico-speaker':
+							if(animationNotes.length > 0 && Conductor.songPosition > animationNotes[0][0])
+							{
+								var noteData:Int = 1;
+								if(animationNotes[0][1] > 2) noteData = 3;
+		
+								noteData += FlxG.random.int(0, 1);
+								playAnim('shoot' + noteData, true);
+								animationNotes.shift();
+							}
+							if(animation.curAnim.finished) playAnim(animation.curAnim.name, false, false, animation.curAnim.frames.length - 3);
 					}
-					if(animation.curAnim.finished) playAnim(animation.curAnim.name, false, false, animation.curAnim.frames.length - 3);
-			}
-
-			if (!isPlayer)
-			{
-				if (animation.curAnim.name.startsWith('sing'))
-				{
-					holdTimer += elapsed;
+		
+					if (!isPlayer)
+					{
+						if (animation.curAnim.name.startsWith('sing'))
+						{
+							holdTimer += elapsed;
+						}
+		
+						if (holdTimer >= Conductor.stepCrochet * 0.0011 * singDuration)
+						{
+							dance();
+							holdTimer = 0;
+						}
+					}
+		
+					if(animation.curAnim.finished && animation.getByName(animation.curAnim.name + '-loop') != null)
+					{
+						playAnim(animation.curAnim.name + '-loop');
+					}
 				}
-
-				if (holdTimer >= Conductor.stepCrochet * 0.0011 * singDuration)
-				{
-					dance();
-					holdTimer = 0;
-				}
-			}
-
-			if(animation.curAnim.finished && animation.getByName(animation.curAnim.name + '-loop') != null)
-			{
-				playAnim(animation.curAnim.name + '-loop');
-			}
 		}
+		else{
+			if(!debugMode && animation.curAnim != null)
+				{
+					if(heyTimer > 0)
+					{
+						heyTimer -= elapsed;
+						if(heyTimer <= 0)
+						{
+							if(specialAnim && animation.curAnim.name == 'hey' || animation.curAnim.name == 'cheer')
+							{
+								specialAnim = false;
+								dance();
+							}
+							heyTimer = 0;
+						}
+					} else if(specialAnim && animation.curAnim.finished)
+					{
+						specialAnim = false;
+						dance();
+					}
+					
+					switch(curCharacter)
+					{
+						case 'pico-speaker':
+							if(animationNotes.length > 0 && Conductor.songPosition > animationNotes[0][0])
+							{
+								var noteData:Int = 1;
+								if(animationNotes[0][1] > 2) noteData = 3;
+		
+								noteData += FlxG.random.int(0, 1);
+								playAnim('shoot' + noteData, true);
+								animationNotes.shift();
+							}
+							if(animation.curAnim.finished) playAnim(animation.curAnim.name, false, false, animation.curAnim.frames.length - 3);
+					}
+		
+					if (!isPlayer)
+					{
+						if (animation.curAnim.name.startsWith('sing'))
+						{
+							holdTimer += elapsed;
+						}
+		
+						if (holdTimer >= Conductor.stepCrochet * 0.0011 * singDuration)
+						{
+							dance();
+							holdTimer = 0;
+						}
+					}
+		
+					if(animation.curAnim.finished && animation.getByName(animation.curAnim.name + '-loop') != null)
+					{
+						playAnim(animation.curAnim.name + '-loop');
+					}
+				}
+		}
+
 		super.update(elapsed);
 	}
 
