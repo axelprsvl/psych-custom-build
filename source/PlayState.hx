@@ -3677,7 +3677,7 @@ class PlayState extends MusicBeatState
 
 		if (generatedMusic)
 		{
-			if (!inCutscene /*&& !ClientPrefs.playOpp*/)
+			if (!inCutscene && !ClientPrefs.playOpp)
 			{
 				if (!cpuControlled)
 				{
@@ -3687,12 +3687,13 @@ class PlayState extends MusicBeatState
 					&& boyfriend.holdTimer > Conductor.stepCrochet * 0.0011 * boyfriend.singDuration
 					&& boyfriend.animation.curAnim.name.startsWith('sing')
 					&& !boyfriend.animation.curAnim.name.endsWith('miss'))
+					//&& !ClientPrefs.playOpp)
 				{
 					boyfriend.dance();
 					// boyfriend.animation.curAnim.finish();
 				}
 			}
-
+			
 			if (!inCutscene && ClientPrefs.playOpp)
 			{
 				if (!cpuControlled)
@@ -5210,7 +5211,7 @@ class PlayState extends MusicBeatState
 			else if (boyfriend.animation.curAnim != null
 				&& boyfriend.holdTimer > Conductor.stepCrochet * 0.0011 * boyfriend.singDuration
 				&& boyfriend.animation.curAnim.name.startsWith('sing')
-				&& !boyfriend.animation.curAnim.name.endsWith('miss') /*&& !ClientPrefs.playOpp*/)
+				&& !boyfriend.animation.curAnim.name.endsWith('miss') && !ClientPrefs.playOpp)
 			{
 				boyfriend.dance();
 				// boyfriend.animation.curAnim.finish();
@@ -5219,7 +5220,7 @@ class PlayState extends MusicBeatState
 				&& dad.holdTimer > Conductor.stepCrochet * 0.0011 * dad.singDuration
 				&& dad.animation.curAnim.name.startsWith('sing')
 				&& !dad.animation.curAnim.name.endsWith('miss')
-				&& ClientPrefs.playOpp)
+			&& ClientPrefs.playOpp)
 			{
 				dad.dance();
 				// boyfriend.animation.curAnim.finish();
@@ -5263,14 +5264,8 @@ class PlayState extends MusicBeatState
 			}
 		});
 		combo = 0;
-		/*if (ClientPrefs.playOpp)
-		{
-			health += daNote.missHealth * healthLoss;
-		}
-		else
-		{ */
+		
 		health -= daNote.missHealth * healthLoss;
-		// }
 
 		if (instakillOnMiss)
 		{
@@ -5502,15 +5497,9 @@ class PlayState extends MusicBeatState
 					combo = 9999;
 				popUpScore(note);
 			}
-			/*if (ClientPrefs.playOpp)
-			{
-				health -= note.hitHealth * healthGain;
-			}
-			else
-			{ */
+			
 			health += note.hitHealth * healthGain;
-			// }
-
+			
 			if (!note.noAnimation)
 			{
 				var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))];
